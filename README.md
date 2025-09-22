@@ -72,6 +72,6 @@ The NN models have been developed using CUDA enabled Tensorflow.
     - run "git status" # this should say "On branch ..."
     - Make a change to the README.md file.
     - run "git status" to see the files ready for commit.
-    - run "git add "README.md""; "README.md" can be replaced with any other filename later.
+    - run "git add "README.md"" to stage a file; "README.md" can be replaced with any other filename later. Run "git restore --staged "<file_name>" to unstage a file.
     - run "git commit -m "<some_message>"
     - run "git push"
