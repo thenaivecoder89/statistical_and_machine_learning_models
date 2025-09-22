@@ -7,7 +7,7 @@ The NN models have been developed using CUDA enabled Tensorflow.
 3. cuDNN version 8.9.7 (not needed but can be installed as a safeguard).
 # process to enable tensorflow with CUDA
 1. Enable Windows Subsystem for Linux (WSL) - one-time setup:
-    - About: WSL is a compatibility layer built into Windows that allows developers to run a genuine Linus environment directly inside Windows.
+    - About: WSL is a compatibility layer built into Windows that allows developers to run a genuine Linux environment directly inside Windows.
     - Need: WSL is needed since "tensorflow[and-cuda]" is not supported on native Windows.
     - How to Enable: run "wsl --install -d Ubuntu" in shell.
     - Check Version: run "wsl -l -v" in shell - this should show version 2. If not, run "wsl --set-version Ubuntu -2" in shell.
