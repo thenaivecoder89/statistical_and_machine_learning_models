@@ -1,5 +1,5 @@
 # machine_learning_algorithms
-This repo is a consolidation of multiple ML and NN algorithms that have been implemented.
+This repo is a consolidation of multiple ML and Statistical that have been implemented as part of a reasearch exercise.
 The NN models have been developed using CUDA enabled Tensorflow.
 # requirements to enable tensorflow with CUDA
 1. Python version 3.12  (check: run "python --version" in shell).
