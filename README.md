@@ -1,6 +1,18 @@
-# machine_learning_algorithms
-This repo is a consolidation of multiple ML and Statistical that have been implemented as part of a reasearch exercise.
-The NN models have been developed using CUDA enabled Tensorflow.
+# machine_learning_algorithms_and_statistical_models
+ - This repo is a consolidation of multiple ML and Statistical models that have been implemented as part of a reasearch exercise.
+ - Data sourcing for stock analysis model:
+   - Data for the stock analysis model has been sourced from the Zerodha API (KiteConnect).
+   - The API uses OAuth which requires the login url (generated using login_url() function) to be called each time the data is to be collected.
+   - In order to eliminate manual intervention each time, a Uvicorn server has been developed which writes the request_token into a file.
+   - Steps to activate the server:
+        1. Use the link "http://127.0.0.1:8000/login_url" to access the Kite Login page.
+        2. Enter username, password and token number (for 2FA) when prompted.
+        3. Once entered, the page will redirect and a message: {'status': 'ok'} should be displayed.
+        4. Once the above steps are completed, open a new VSCode Terminal and enable virtual environment.
+        5. After enabling virtual environment, navigate to the directory containing "server.py" file and run the uvicorn command to activate the same (with reload enabled).
+   - Once the above steps are completed, run the "Zerodha_data_sourcing.py" program to source the necessary data.
+
+ - The NN models have been developed using CUDA enabled Tensorflow.
 # requirements to enable tensorflow with CUDA
 1. Python version 3.12  (check: run "python --version" in shell).
 2. CUDA version 12.3 (check: run "nvcc --version" in shell).
