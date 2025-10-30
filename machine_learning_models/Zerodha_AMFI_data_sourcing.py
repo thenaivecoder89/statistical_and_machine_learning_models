@@ -65,13 +65,17 @@ try:
             
             # Pull NAV data
             nav_data_url = f'https://api.mfapi.in/mf/{scheme_code}'
-            resp_nav = requests.get(nav_data_url)
-            nav_out = resp_nav.json()
-            fund_house = nav_out['meta'].get('fund_house')
-            df_nav_data = pd.DataFrame(nav_out['data'])
-            df_nav_data.index.name = 'SNo.'
-            df_nav_data['fund_name'] = fund_house
-            df_nav_data.to_csv(f'{mf_hist_nav_data}/00.{fund_house}_Historical_NAV.csv')
+            resp_nav = requests.get(nav_data_url, timeout=20)
+            try:
+                nav_out = resp_nav.json()
+                print(f'Metadata:\n{nav_out['meta']}')
+                fund_house = nav_out['meta'].get('fund_house')
+                df_nav_data = pd.DataFrame(nav_out['data'])
+                df_nav_data.index.name = 'SNo.'
+                df_nav_data['fund_name'] = fund_house
+                df_nav_data.to_csv(f'{mf_hist_nav_data}/00.{fund_house}_Historical_NAV.csv')
+            except requests.exceptions.Timeout:
+                print('Error, Session Timeout')
         except Exception as e:
             print(f'Error Encountered While Executing Option 2: {e}')
     elif run_requirement == 3:
@@ -91,6 +95,7 @@ try:
         nav_data_url_full = [
             f'https://api.mfapi.in/mf/{scheme_code}' for scheme_code in scheme_code_all
         ]
+        nav_data_url_full = sorted(set(nav_data_url_full))
         total_records = len(nav_data_url_full)
         print(f'URLs fetched: {total_records}')
         print(f'Commencing data download for {total_records}...')
@@ -101,15 +106,17 @@ try:
         while batch <= total_batch:
             cont = input(f'Processing batch {batch} of {total_batch}. Continue? (Y/N): ')
             if cont == 'Y':
-                mode = input('Would you like to manually select batch start and end? (Y/N):')
+                mode = input('Would you like to manually select batch start? (Y/N):')
                 if mode == 'Y':
                     batch_start = int(input('Enter batch start number: '))
-                    batch_end = int(input('Enter batch end number: '))
+                    batch_end = min((batch_start + batch_size), total_records)
+                    print(f'Selected batch for processing:\n{nav_data_url_full[batch_start:batch_end]}')
                 else:
                     batch_start = (batch - 1) * batch_size
                     batch_end = min((batch * batch_size), total_records)
                 
                 current_batch_urls = nav_data_url_full[batch_start:batch_end]
+                current_batch_urls = sorted(set(current_batch_urls))
                 loop_range = len(current_batch_urls)
                 for i in range(loop_range):
                     print(f'Counter: {i + 1} of {loop_range}')
