@@ -1,0 +1,20 @@
+create table amfi_database(
+trx_id bigint generated always as identity primary key,
+s_no int,
+trx_date date,
+nav double precision,
+fund_name varchar(10000),
+scheme_code int,
+scheme_name varchar(10000),
+trading_symbol_growth varchar(100),
+trading_symbol_reinvestment varchar(100)
+);
+
+select * from amfi_database;
+
+delete from amfi_database;
+
+alter table amfi_database
+	alter column trx_id restart with 1;
+
+drop table amfi_database;
