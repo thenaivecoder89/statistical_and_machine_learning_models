@@ -117,7 +117,7 @@
     - run "git add "README.md"" to stage a file; "README.md" can be replaced with any other filename later. Run "git restore --staged "<file_name>" to unstage a file.
     - run "git commit -m "<some_message>"
     - run "git push"
-# requirements to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
+# requirements and process to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
 1. Core requirement: Python 3.12 and CUDA 13 in a WSL environment.
 2. Key note: Since we already have tensorflow enbaled with CUDA, we chose to setup RAPIDS in a different virtual environment (to avoid conflicts). Furthermore, for ease of use, the environment was exposed on a separate Jupyter kernel that allows us to switch between tensorflow and rapids as needed.
 3. Setup steps:
