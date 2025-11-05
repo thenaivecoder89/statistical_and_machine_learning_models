@@ -117,3 +117,47 @@
     - run "git add "README.md"" to stage a file; "README.md" can be replaced with any other filename later. Run "git restore --staged "<file_name>" to unstage a file.
     - run "git commit -m "<some_message>"
     - run "git push"
+# requirements to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
+1. Core requirement: Python 3.12 and CUDA 13 in a WSL environment.
+2. Key note: Since we already have tensorflow enbaled with CUDA, we chose to setup RAPIDS in a different virtual environment (to avoid conflicts). Furthermore, for ease of use, the environment was exposed on a separate Jupyter kernel that allows us to switch between tensorflow and rapids as needed.
+3. Setup steps:
+    - Pre-checks: run "nvidia-smi" and "python3 --version" in the WSL environment to verify CUDA and Python versions.
+    - Step 1: create a clean virtual environment for rapids.
+
+        a. run "python3 -m venv ~/<name_of_your_environment>" to setup your v_env and activate the same using "source ~/<name_of_your_environment>/bin/activate".
+
+        b. run "python -m pip install -U pip setuptools wheel" as good hygneie.
+
+    - Step 2: install CUDA runtime pieces (Python Wheels).
+
+        a. run "python -m pip install -U nvidia-cuda-runtime nvidia-cublas"
+
+    - Step 3: install RAPIDS (cuDF) + friends (dask, pyarrow, fastparquet) for CUDA 13.
+
+        a. run "python -m pip install -U cudf-cu13 dask-cudf-cu13 rmm-cu13" to install core RAPIDS data frame libraries.
+
+        b. run "python -m pip install -U cupy-cuda13x" to enable GPU numpy.
+
+        c. run "python -m pip install -U pandas pyarrow fastparquet" to enable parquet/csv helpers.
+
+    - Step 4: register Jupyter kernel for the virtual environment - for ease of access to the environment.
+
+        a. run "python -m pip install -U ipykernel" and "python -m ipykernel install --user --name=rapids-cuDF --display-name=<display_name_of_your_environment>"
+
+    - Step 5: setup "connectorx" for parallelization and direct data read during data calls from a database - further reduces data fetch time.
+
+        a. run "python -m pip install -U connectorx"
+
+    - Step 6: install CUDA APT repo and expose library path - to be executed inside the WSL terminal (system level).
+
+        a. run "source /etc/os-release" and "echo "$VERSION_ID"" to check Ubuntu version (22.04: jammy/ 24.04: noble)
+
+        *Important Note: The following steps are only for 24.04: noble.*
+
+        b. run "wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb" to download the nvidia apt repo.
+
+        c. run "sudo dpkg -i cuda-keyring_1.1-1_all.deb" and "sudo apt-get update" to add the nvidia cuda repo keyring.
+
+        d. run "sudo apt-get install -y cuda-toolkit-13-0" to install the toolkit. Includes "libnvrtc.so.13".
+
+        e. run "echo 'export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc" and "source ~/.bashrc" to expose library path.
