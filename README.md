@@ -66,12 +66,19 @@
     - In shell, run "nvidia-smi" to make sure CUDA is available.
     - In WSL virtual environment, run "pip install "tensorflow[and-cuda]"
     - Run the following script to check tensorflow is running with CUDA and has Keras:
+        
         a. import tensorflow as tf
+        
         b. print("TensorFlow version:", tf.__version__)
+        
         c. print("Built with CUDA:", tf.test.is_built_with_cuda())
+        
         d. print("Physical GPUs:", tf.config.list_physical_devices('GPU'))
+        
         e. print("Default GPU device name:", tf.test.gpu_device_name()) # this should show the GPU device name exactly as per actual GPU name.
+        
         f. print(f'tf.keras exists: {hasattr(tf, 'keras')}')
+
 # optional process to connect git repo with WSL (without SSH):
 1. From github website, copy the SSH link. If repo is public no need for additional steps but if private, personal access token (PAT) will need to be created.
 2. In WSL environment (not virtual) run the following commands (without the <> brackets):
