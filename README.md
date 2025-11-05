@@ -29,22 +29,37 @@
     - From the extensions marketplace, search and install Python and Jupyter.
     - Once installed, from the WSL terminal run "python3 -V" to ensure the version reads "3.12".
     - Install "pip" in the WSL environment by running the following:
+        
         a. sudo apt update
+        
         b. sudo apt install -y python3-pip python3-venv
+    
     - Verify the installations by running the following:
+        
         a. python3 -m pip --version
+        
         b. pip3 --version
+        
         c. which pip3 # this should show /usr/bin/pip3
+
 3. Enable virtual environment in WSL (and "pip" in the virtual environment):
     - Run the following commands in the WSL terminal:
+        
         a. python3 -m venv .<name_of_virtual_environment>
+        
         b. source .<name_of_virtual_environment>/bin/activate #this needs to be run everytime the virtual environment is to be activated for pip installations.
+        
         c. python -m pip install --upgrade pip setuptools wheel
+
 4. Rename/ deactivate virtual environment:
     - In case renaming of the virtual environment is needed, recommended practice is to deactivate, remove the current environment and create a new environment by running:
+        
         a. deactivate
+        
         b. rm -rf .<name_of_virtual_environment>
+        
         c. pythom3 -m venv .<name_of_new_virtual_environment>
+    
     - Once a new envornment is created, re-run the pip upgrade command as instructed in item 3.c.
 5. Installing tensorflow (with CUDA):
     - In shell, run "wsl -l -v" to make sure WSL is up and running.
@@ -67,16 +82,24 @@
     - GitHub → Settings → Developer settings → Personal access tokens.
     - Create a fine-grained (or classic) token.
     - Minimum permissions/scopes for push:
+        
         a. Fine-grained: select your repo, grant Contents: Read and write.
+        
         b. Classic: scope repo.
+    
     - Copy the token (you’ll paste it once; with a helper it’s remembered).
     - If your org uses SSO, authorize the token for the org when prompted.
 4. Cloning repo in WSL:
     - To clone the repo in WSL, run the following commands:
+        
         a. mkdir -p ~/projects
+        
         b. cd ~/projects
+        
         c. git clone https://github.com/<paste_SSH_link_copied_in_step_1>
+        
         d. enter PAT when prompted
+
 5. Test the repo:
     - run "ls -la" to see the folder that was created - this should have the same name as the git repo.
     - run "cd <folder_name>"
