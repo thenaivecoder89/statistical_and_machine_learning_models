@@ -9,8 +9,12 @@ format:
     figheight: 6
     papersize: a4
     tbl-colwidths: auto
+    tbl-cap-location: top
+    tbl-slide-width: true
     geometry:
       - margin=15mm
+    toc: true
+    toc-depth: 3
     metadata:
       header-includes: |
         \usepackage{fvextra}
