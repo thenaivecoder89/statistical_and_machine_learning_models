@@ -12,7 +12,7 @@
         5. After enabling virtual environment, navigate to the directory containing "server.py" file and run the uvicorn command to activate the same (with reload enabled).
    - Once the above steps are completed, run the "Zerodha_data_sourcing.py" program to source the necessary data.
 
- - The NN models have been developed using CUDA enabled Tensorflow.
+ - The ML models have been developed in a CUDA enabled WSL environment.
 # requirements to enable tensorflow with CUDA
 1. Python version 3.12  (check: run "python --version" in shell).
 2. CUDA version 12.3 (check: run "nvcc --version" in shell).
