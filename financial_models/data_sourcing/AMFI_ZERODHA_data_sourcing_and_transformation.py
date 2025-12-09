@@ -67,6 +67,65 @@ class AmfiDataPipeline:
         runtime = end_time - start_time
         return cudf_transformed_data, runtime
 
+    def nav_data_extract(self, cudf_amfi_trx_data: cudf.DataFrame, filename: str):
+        start_time = time.perf_counter() # Record code block start time
+        print(f'Total number of records for NAV data extract: {len(cudf_amfi_trx_data)}')
+        urls_list = cudf_amfi_trx_data['URLs'].to_arrow().to_pylist()
+        master_data = []
+        counter = 1
+        for item in range(len(urls_list)):
+            try:
+                print(f'Pulling data from URL: {urls_list[item]}')
+                resp = requests.get(urls_list[item], timeout=self.timeout)
+                resp.raise_for_status()
+                data = resp.json()
+                schemeCode_NAV = data['meta']['scheme_code']
+                # Flattening each row, attaching scheme code and appending to master list
+                for nav_row in data['data']:
+                    nav_row['schemeCode_NAV'] = schemeCode_NAV
+                    master_data.append(nav_row)
+
+                print(f'Processed {counter} of {len(urls_list)}.')
+                counter += 1
+            except Exception as e:
+                print(f'Error encountered when processing record number {counter}. Proceeding to next counter.')
+                tb = traceback.extract_tb(e.__traceback__)[-1]
+                print(f'Error: {e} in line {tb.line} number: {tb.lineno}')
+                counter += 1
+                continue
+        # df_nav_amfi_data = pd.DataFrame(master_data['data'])
+        # df_nav_amfi_data['schemeCode_NAV'] = master_data['schemeCode_NAV']
+        cudf_nav_amfi_data = cudf.DataFrame(master_data)
+        print(f'Total records with NAV data: {len(cudf_nav_amfi_data)}')
+        cudf_nav_amfi_data = cudf.merge(
+            cudf_nav_amfi_data,
+            cudf_amfi_trx_data,
+            left_on='schemeCode_NAV',
+            right_on='schemeCode',
+            how='left'
+        )
+        cudf_nav_amfi_data = cudf_nav_amfi_data[
+            [
+                'schemeCode_NAV',
+                'tradingsymbol',
+                'isinGrowth',
+                'isinDivReinvestment',
+                'amc',
+                'name',
+                'schemeName',
+                'dividend_type',
+                'scheme_type',
+                'plan',
+                'date',
+                'nav'
+            ]
+        ]
+        print(f'Total records in final dataset - including NAV data: {len(cudf_nav_amfi_data)}')
+        cudf_nav_amfi_data.to_csv(filename)
+        end_time = time.perf_counter() # Record code block end time
+        runtime = end_time - start_time
+        return cudf_nav_amfi_data, runtime
+
 # Main program block
 def main_program():
     # Initialize environment variables
@@ -76,9 +135,10 @@ def main_program():
     kite_base_data = os.getenv('kite_base_data')
     amfi_trx_data = os.getenv('amfi_trx_data')
     kite_connect_api = os.getenv('kite_connect_api')
+    amfi_nav_data = os.getenv('amfi_nav_data')
 
     # Initialize class
-    amfi_pipeline = AmfiDataPipeline(url=amfi_url, timeout=25)
+    amfi_pipeline = AmfiDataPipeline(url=amfi_url, timeout=30)
     
     run_option = int(input("""Available options: 
                            1-Data_Load,
@@ -106,6 +166,16 @@ def main_program():
         )
         print(f'Records remaining after transformation: {len(dt_output) / len(dl_amfi_base) * 100:.2f}%. Top 10 records:\n{dt_output.head(10)}')
         print(f'Data transformation execution time: {dt_run:.2f} seconds.')
+    elif run_option == 3: # NAV Data Extract
+        dt_output = cudf.read_csv(amfi_trx_data) # Load transformed data
+        # Call nav data extract function
+        df_nav_extract, df_nav_run = amfi_pipeline.nav_data_extract(
+            cudf_amfi_trx_data=dt_output,
+            filename=amfi_nav_data
+        )
+        print(f'NAV dataset:\n{df_nav_extract.head(10)}')
+        print(f'Loaded {len(df_nav_extract)} records into CSV.')
+        print(f'Code execution time: {df_nav_run/60:.2f} minutes.')
     else:
         print('Invalid selection')
 
