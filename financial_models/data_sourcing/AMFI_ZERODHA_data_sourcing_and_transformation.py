@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from kiteconnect import KiteConnect
 import pandas as pd
-import sys, cudf, time, requests, traceback, io
+import sys, cudf, time, requests, traceback, io, cupy
 
 class AmfiDataPipeline:
 
@@ -93,8 +93,6 @@ class AmfiDataPipeline:
                 print(f'Error: {e} in line {tb.line} number: {tb.lineno}')
                 counter += 1
                 continue
-        # df_nav_amfi_data = pd.DataFrame(master_data['data'])
-        # df_nav_amfi_data['schemeCode_NAV'] = master_data['schemeCode_NAV']
         cudf_nav_amfi_data = cudf.DataFrame(master_data)
         print(f'Total records with NAV data: {len(cudf_nav_amfi_data)}')
         cudf_nav_amfi_data = cudf.merge(
@@ -125,6 +123,117 @@ class AmfiDataPipeline:
         end_time = time.perf_counter() # Record code block end time
         runtime = end_time - start_time
         return cudf_nav_amfi_data, runtime
+    
+    def feature_engineering(self, cudf_amfi_nav_data: cudf.DataFrame, filename):
+        start_time = time.perf_counter() # Record code block start time
+        cudf_amfi_nav_data = cudf_amfi_nav_data.reset_index().rename(columns={'index': 'SNo.'}) # Creating a SNo. column for sorting
+        # Dropping unwanted column(s)
+        cudf_amfi_nav_data.drop(
+            columns='Unnamed: 0',
+            inplace=True
+        )
+        # Correcting datatypes
+        cudf_amfi_nav_data[
+            ['tradingsymbol',
+            'isinGrowth',
+            'isinDivReinvestment',
+            'amc',
+            'name',
+            'schemeName',
+            'dividend_type',
+            'scheme_type',
+            'plan']
+        ] = cudf_amfi_nav_data[
+            ['tradingsymbol',
+            'isinGrowth',
+            'isinDivReinvestment',
+            'amc',
+            'name',
+            'schemeName',
+            'dividend_type',
+            'scheme_type',
+            'plan']
+        ].astype('str')
+        cudf_amfi_nav_data['date'] = cudf.to_datetime(cudf_amfi_nav_data['date'])
+        # Sorting data as ascending on date (for each scheme code)
+        cudf_amfi_nav_data = cudf_amfi_nav_data.sort_values(
+            by=['schemeCode_NAV', 'date'],
+            ascending=[True, True]
+        )
+        cudf_amfi_nav_data['year'] = cudf_amfi_nav_data['date'].dt.year # Generating year column for later extract
+        # Generating daily percentage changes
+        cudf_amfi_nav_data['daily_nav_pct_change'] = (
+            cudf_amfi_nav_data
+            .groupby('schemeCode_NAV')['nav']
+            .pct_change()
+        )
+        # Dropping NULL NAV change values
+        cudf_amfi_nav_data = cudf_amfi_nav_data.dropna(
+            subset='daily_nav_pct_change',
+            how='any'
+        )
+        # Generating daily log returns
+        cudf_amfi_nav_data['daily_log_returns'] = cupy.log(1 + cudf_amfi_nav_data['daily_nav_pct_change'])
+        # Transforming view of the data to annual per scheme (instead of daily)
+        cudf_amfi_nav_data_annualized = cudf_amfi_nav_data[
+            ['schemeCode_NAV',
+            'tradingsymbol',
+            'isinGrowth',
+            'isinDivReinvestment',
+            'amc',
+            'name',
+            'schemeName',
+            'dividend_type',
+            'scheme_type',
+            'plan',
+            'year']
+        ].drop_duplicates().reset_index().rename(columns={'index': 'SNo.'})
+        cudf_amfi_nav_data_annualized.index.name = 'index'
+        # Generating annualized returns using daily pct nav change
+        annualized_nav_df = (
+            cudf_amfi_nav_data
+            .groupby(['schemeCode_NAV', 'year'])['daily_log_returns']
+            .mean()
+            .rename('mean_daily_log_returns')
+            .reset_index()
+        )
+        annualized_nav_df['annualized_log_returns'] = (
+            cupy.exp(252 * annualized_nav_df['mean_daily_log_returns']) - 1
+        )
+        # Generating annualized volatility of returns
+        vol_nav_df = (
+            cudf_amfi_nav_data
+            .groupby(['schemeCode_NAV', 'year'])['daily_nav_pct_change']
+            .std()
+            .rename('volatility')
+            .reset_index()
+        )
+        vol_nav_df['annualized_volatility'] = (
+            vol_nav_df['volatility'] * 252 ** 0.5
+        )
+        # WORK ON THIS TOMORROW
+        # Mergining annualized log returns to annualized data
+        cudf_amfi_nav_data_annualized = cudf.merge(
+            cudf_amfi_nav_data_annualized,
+            annualized_nav_df['annualized_log_returns'],
+            left_on=cudf_amfi_nav_data_annualized['schemeCode_NAV'],
+            right_on=annualized_nav_df['schemeCode_NAV'],
+            how='inner'
+        )
+        # Mergining annulaized volatility to annualized data
+        cudf_amfi_nav_data_annualized['annualized_volatility'] = cudf.merge(
+            cudf_amfi_nav_data_annualized,
+            vol_nav_df['annualized_volatility'],
+            left_on=cudf_amfi_nav_data_annualized['schemeCode_NAV'],
+            right_on=annualized_nav_df['schemeCode_NAV'],
+            how='inner'
+        )
+        print(f'Data after 2nd transformation and feature engineering:\n{cudf_amfi_nav_data_annualized.head(10)}\n{cudf_amfi_nav_data_annualized.tail(10)}')
+        print(f'Total number of records: {len(cudf_amfi_nav_data_annualized)}')
+        print(f'Dataset datatypes:\n{cudf_amfi_nav_data_annualized.dtypes}')
+        end_time = time.perf_counter() # Record code block end time
+        runtime = end_time - start_time
+        return runtime
 
 # Main program block
 def main_program():
@@ -141,9 +250,10 @@ def main_program():
     amfi_pipeline = AmfiDataPipeline(url=amfi_url, timeout=30)
     
     run_option = int(input("""Available options: 
-                           1-Data_Load,
-                           2-Data_Transformation,
+                           1-Data_Load
+                           2-Data_Transformation
                            3-NAV_Data_Extract
+                           4-Feature_Engineering
                            Select option: """))
     if run_option == 1: # Data Load
         # Call data load function
@@ -164,7 +274,7 @@ def main_program():
             cudf_kite_data=dl_kite_base,
             filename=amfi_trx_data
         )
-        print(f'Records remaining after transformation: {len(dt_output) / len(dl_amfi_base) * 100:.2f}%. Top 10 records:\n{dt_output.head(10)}')
+        print(f'Records remaining after transformation: {len(dt_output)}, {len(dt_output) / len(dl_amfi_base) * 100:.2f}%. Top 10 records:\n{dt_output.head(10)}')
         print(f'Data transformation execution time: {dt_run:.2f} seconds.')
     elif run_option == 3: # NAV Data Extract
         dt_output = cudf.read_csv(amfi_trx_data) # Load transformed data
@@ -175,7 +285,15 @@ def main_program():
         )
         print(f'NAV dataset:\n{df_nav_extract.head(10)}')
         print(f'Loaded {len(df_nav_extract)} records into CSV.')
-        print(f'Code execution time: {df_nav_run/60:.2f} minutes.')
+        print(f'NAV data extract execution time: {df_nav_run/60:.2f} minutes.')
+    elif run_option == 4: # Feature Engineering
+        cudf_nav_data = cudf.read_csv(amfi_nav_data)
+        df_nav_feature_run = amfi_pipeline.feature_engineering(
+            cudf_amfi_nav_data=cudf_nav_data,
+            filename=amfi_nav_data
+        )
+        # print(f'Feature engineered dataset:\n{df_nav_features.head(10)}')
+        print(f'Feature engineering execution time: {df_nav_feature_run:.2f} seconds.')
     else:
         print('Invalid selection')
 
