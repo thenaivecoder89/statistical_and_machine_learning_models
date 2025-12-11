@@ -211,22 +211,25 @@ class AmfiDataPipeline:
         vol_nav_df['annualized_volatility'] = (
             vol_nav_df['volatility'] * 252 ** 0.5
         )
-        # WORK ON THIS TOMORROW
         # Mergining annualized log returns to annualized data
-        cudf_amfi_nav_data_annualized = cudf.merge(
-            cudf_amfi_nav_data_annualized,
-            annualized_nav_df['annualized_log_returns'],
-            left_on=cudf_amfi_nav_data_annualized['schemeCode_NAV'],
-            right_on=annualized_nav_df['schemeCode_NAV'],
-            how='inner'
+        cudf_amfi_nav_data_annualized = (
+            cudf_amfi_nav_data_annualized.merge(
+                annualized_nav_df[['annualized_log_returns', 'schemeCode_NAV', 'year']],
+                on=['schemeCode_NAV', 'year'],
+                how='inner'
+        )
         )
         # Mergining annulaized volatility to annualized data
-        cudf_amfi_nav_data_annualized['annualized_volatility'] = cudf.merge(
-            cudf_amfi_nav_data_annualized,
-            vol_nav_df['annualized_volatility'],
-            left_on=cudf_amfi_nav_data_annualized['schemeCode_NAV'],
-            right_on=annualized_nav_df['schemeCode_NAV'],
-            how='inner'
+        cudf_amfi_nav_data_annualized = (
+            cudf_amfi_nav_data_annualized.merge(
+                vol_nav_df[['schemeCode_NAV', 'year', 'annualized_volatility']],
+                on=['schemeCode_NAV', 'year'],
+                how='inner'
+            )
+        )
+        cudf_amfi_nav_data_annualized = cudf_amfi_nav_data_annualized.sort_values(
+            by=['schemeCode_NAV', 'year'],
+            ascending=[True, True]
         )
         print(f'Data after 2nd transformation and feature engineering:\n{cudf_amfi_nav_data_annualized.head(10)}\n{cudf_amfi_nav_data_annualized.tail(10)}')
         print(f'Total number of records: {len(cudf_amfi_nav_data_annualized)}')
@@ -251,9 +254,9 @@ def main_program():
     
     run_option = int(input("""Available options: 
                            1-Data_Load
-                           2-Data_Transformation
+                           2-1st_Round_Data_Transformation
                            3-NAV_Data_Extract
-                           4-Feature_Engineering
+                           4-Feature_Engineering_and_2nd_Round_Data_Transformation
                            Select option: """))
     if run_option == 1: # Data Load
         # Call data load function
