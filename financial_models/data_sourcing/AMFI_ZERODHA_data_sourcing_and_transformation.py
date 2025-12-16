@@ -154,7 +154,7 @@ class AmfiDataPipeline:
             'scheme_type',
             'plan']
         ].astype('str')
-        cudf_amfi_nav_data['date'] = cudf.to_datetime(cudf_amfi_nav_data['date'])
+        cudf_amfi_nav_data['date'] = cudf.to_datetime(cudf_amfi_nav_data['date'], format='%d-%m-%Y')
         # Sorting data as ascending on date (for each scheme code)
         cudf_amfi_nav_data = cudf_amfi_nav_data.sort_values(
             by=['schemeCode_NAV', 'date'],
@@ -227,16 +227,19 @@ class AmfiDataPipeline:
                 how='inner'
             )
         )
+        # Sorting merged data as per scheme code and year
         cudf_amfi_nav_data_annualized = cudf_amfi_nav_data_annualized.sort_values(
             by=['schemeCode_NAV', 'year'],
             ascending=[True, True]
         )
-        print(f'Data after 2nd transformation and feature engineering:\n{cudf_amfi_nav_data_annualized.head(10)}\n{cudf_amfi_nav_data_annualized.tail(10)}')
+        # Resetting file index
+        cudf_amfi_nav_data_annualized.set_index('SNo.', inplace=True)
+        cudf_amfi_nav_data_annualized.to_csv(filename)
         print(f'Total number of records: {len(cudf_amfi_nav_data_annualized)}')
         print(f'Dataset datatypes:\n{cudf_amfi_nav_data_annualized.dtypes}')
         end_time = time.perf_counter() # Record code block end time
         runtime = end_time - start_time
-        return runtime
+        return cudf_amfi_nav_data_annualized, runtime
 
 # Main program block
 def main_program():
@@ -248,6 +251,7 @@ def main_program():
     amfi_trx_data = os.getenv('amfi_trx_data')
     kite_connect_api = os.getenv('kite_connect_api')
     amfi_nav_data = os.getenv('amfi_nav_data')
+    amfi_nav_eng_data = os.getenv('amfi_nav_eng_data')
 
     # Initialize class
     amfi_pipeline = AmfiDataPipeline(url=amfi_url, timeout=30)
@@ -291,11 +295,11 @@ def main_program():
         print(f'NAV data extract execution time: {df_nav_run/60:.2f} minutes.')
     elif run_option == 4: # Feature Engineering
         cudf_nav_data = cudf.read_csv(amfi_nav_data)
-        df_nav_feature_run = amfi_pipeline.feature_engineering(
+        df_nav_features, df_nav_feature_run = amfi_pipeline.feature_engineering(
             cudf_amfi_nav_data=cudf_nav_data,
-            filename=amfi_nav_data
+            filename=amfi_nav_eng_data
         )
-        # print(f'Feature engineered dataset:\n{df_nav_features.head(10)}')
+        print(f'Feature engineered dataset:\n{df_nav_features.head(10)}')
         print(f'Feature engineering execution time: {df_nav_feature_run:.2f} seconds.')
     else:
         print('Invalid selection')
