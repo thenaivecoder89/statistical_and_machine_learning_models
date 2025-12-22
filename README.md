@@ -50,6 +50,8 @@ Environment setup and configuration steps are documented in subsequent sections.
 
 Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
 
+-----
+
 # Process to configure WSL and enable CUDA
 1. Enable Windows Subsystem for Linux (WSL) - one-time setup:
     - About: WSL is a compatibility layer built into Windows that allows developers to run a genuine Linux environment directly inside Windows.
@@ -95,6 +97,8 @@ Data selection is driven by economic relevance, data integrity, and alignment wi
     
     - Once a new envornment is created, re-run the pip upgrade command as instructed in item 3.c.
 
+-----
+
 # Process to connect git repo with WSL (without SSH):
 1. From github website, copy the SSH link. If repo is public no need for additional steps but if private, personal access token (PAT) will need to be created.
 2. In WSL environment (not virtual) run the following commands (without the <> brackets):
@@ -133,6 +137,8 @@ Data selection is driven by economic relevance, data integrity, and alignment wi
     - run "git add "README.md"" to stage a file; "README.md" can be replaced with any other filename later. Run "git restore --staged "<file_name>" to unstage a file.
     - run "git commit -m "<some_message>"
     - run "git push"
+
+-----
 
 # Requirements and process to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
 1. Core requirement: Python 3.12 and CUDA 13 in a WSL environment.
@@ -179,10 +185,14 @@ Data selection is driven by economic relevance, data integrity, and alignment wi
 
         e. run "echo 'export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc" and "source ~/.bashrc" to expose library path.
 
+-----
+
 # Requirements to enable tensorflow with CUDA
 1. Python version 3.12  (check: run "python --version" in shell).
 2. CUDA version 12.3 (check: run "nvcc --version" in shell).
 3. cuDNN version 8.9.7 (not needed but can be installed as a safeguard).
+
+-----
 
 # Process to install CUDA-enabled tensorflow
 1. In shell, run "wsl -l -v" to make sure WSL is up and running.
