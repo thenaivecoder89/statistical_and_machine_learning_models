@@ -1,23 +1,56 @@
-# machine_learning_algorithms_and_statistical_models
- - This repo is a consolidation of multiple ML and Statistical models that have been implemented as part of a reasearch exercise.
- - Data sourcing for stock analysis model:
-   - Data for the stock analysis model has been sourced from the Zerodha API (KiteConnect).
-   - The API uses OAuth which requires the login url (generated using login_url() function) to be called each time the data is to be collected.
-   - In order to eliminate manual intervention each time, a Uvicorn server has been developed which writes the request_token into a file.
-   - Steps to activate the server:
-        1. Use the link "http://127.0.0.1:8000/login_url" to access the Kite Login page.
-        2. Enter username, password and token number (for 2FA) when prompted.
-        3. Once entered, the page will redirect and a message: {'status': 'ok'} should be displayed.
-        4. Once the above steps are completed, open a new VSCode Terminal and enable virtual environment.
-        5. After enabling virtual environment, navigate to the directory containing "server.py" file and run the uvicorn command to activate the same (with reload enabled).
-   - Once the above steps are completed, run the "Zerodha_data_sourcing.py" program to source the necessary data.
+# Statistical models and ML algorithms
+This repository contains a curated set of end-to-end projects focused on econometric modeling, portfolio construction, and market risk analytics, with an emphasis on out-of-sample performance, model validation, and regulatory relevance. The projects are designed to demonstrate practical application of statistical and machine-learning techniques in financial decision-making, combining rigorous quantitative methods with scalable data engineering practices. 
 
- - The ML models have been developed in a CUDA enabled WSL environment.
-# requirements to enable tensorflow with CUDA
-1. Python version 3.12  (check: run "python --version" in shell).
-2. CUDA version 12.3 (check: run "nvcc --version" in shell).
-3. cuDNN version 8.9.7 (not needed but can be installed as a safeguard).
-# process to enable tensorflow with CUDA
+-----
+
+## Projects Overview
+
+1. Econometric Forecasting: ARIMAX vs XGBoost
+A comparative analysis of ARIMAX and gradient-boosted tree models for macro-financial forecasting. The study evaluates:
+ - Out-of-sample predictive performance
+ - Parameter stability and interpretability
+ - Suitability of models for long-horizon forecasts
+The objective is to assess trade-offs between structural econometric models and flexible machine-learning approaches in macroeconomic contexts.
+
+2. Mutual Fund Portfolio Construction (India)
+A large-scale analysis of 6,000+ Indian mutual fund schemes to construct efficient portfolios using:
+ - Log-returns of daily NAV data for annualized returns
+ - Volatility estimation from NAV time series
+ - Risk-adjusted performance via Sharpe ratios
+Portfolios are benchmarked against equity and debt indices, with a focus on diversification, risk-return trade-offs, and practical portfolio optimization.
+
+3. Market Risk Engine (FX / Rates)
+An end-to-end market risk framework implementing:
+ - Historical Value-at-Risk (VaR)
+ - Monte Carlo VaR
+ - Expected Shortfall (ES)
+The engine includes Basel-style backtesting (Kupiec Proportion-of-Failures test and traffic-light framework) and stress testing using both historical crises (e.g., COVID-19, GFC) and hypothetical shocks. The project emphasizes model validation, tail-risk awareness, and regulatory alignment.
+
+-----
+
+## Compute Environment and Performance Design
+Project 1 primarily uses CPU-based workflows with NumPy and Pandas, while Projects 2 and 3 leverage GPU-accelerated computation using CuPy and cuDF within a CUDA-enabled WSL environment.
+This design demonstrates:
+ - Seamless interoperability between CPU and GPU data pipelines
+ - Scalable processing of large financial time-series datasets
+ - Performance-aware engineering choices relevant to production-grade analytics
+Environment setup and configuration steps are documented in subsequent sections.
+
+-----
+
+## Data Sourcing and Economic Rationale
+1. Project 1 – Macroeconomic Forecasting
+ - Database on Indian Economy (DBIE): CPI inflation proxies and USD/INR exchange rates
+ - Ministry of Statistics and Programme Implementation (MoSPI): Official CPI inflation data
+ - Federal Reserve Bank of St. Louis (FRED): Brent crude oil prices
+ - Masterstroke Online: RBI repo rate history
+2. Project 2 – Portfolio Construction
+ - Association of Mutual Funds of India (AMFI): Mutual fund scheme metadata and daily NAVs
+ - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
+
+Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
+
+# Process to configure WSL and enable CUDA
 1. Enable Windows Subsystem for Linux (WSL) - one-time setup:
     - About: WSL is a compatibility layer built into Windows that allows developers to run a genuine Linux environment directly inside Windows.
     - Need: WSL is needed since "tensorflow[and-cuda]" is not supported on native Windows.
@@ -61,25 +94,8 @@
         c. pythom3 -m venv .<name_of_new_virtual_environment>
     
     - Once a new envornment is created, re-run the pip upgrade command as instructed in item 3.c.
-5. Installing tensorflow (with CUDA):
-    - In shell, run "wsl -l -v" to make sure WSL is up and running.
-    - In shell, run "nvidia-smi" to make sure CUDA is available.
-    - In WSL virtual environment, run "pip install "tensorflow[and-cuda]"
-    - Run the following script to check tensorflow is running with CUDA and has Keras:
-        
-        a. import tensorflow as tf
-        
-        b. print("TensorFlow version:", tf.__version__)
-        
-        c. print("Built with CUDA:", tf.test.is_built_with_cuda())
-        
-        d. print("Physical GPUs:", tf.config.list_physical_devices('GPU'))
-        
-        e. print("Default GPU device name:", tf.test.gpu_device_name()) # this should show the GPU device name exactly as per actual GPU name.
-        
-        f. print(f'tf.keras exists: {hasattr(tf, 'keras')}')
 
-# optional process to connect git repo with WSL (without SSH):
+# Process to connect git repo with WSL (without SSH):
 1. From github website, copy the SSH link. If repo is public no need for additional steps but if private, personal access token (PAT) will need to be created.
 2. In WSL environment (not virtual) run the following commands (without the <> brackets):
     - git config --global user.name "<your_git_username>"
@@ -117,7 +133,8 @@
     - run "git add "README.md"" to stage a file; "README.md" can be replaced with any other filename later. Run "git restore --staged "<file_name>" to unstage a file.
     - run "git commit -m "<some_message>"
     - run "git push"
-# requirements and process to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
+
+# Requirements and process to enable data frames with CUDA - RAPIDS cuDF + connectorx (leads to ~70% drop - on average - in processing times {tested on a dataset of 20Mn records})
 1. Core requirement: Python 3.12 and CUDA 13 in a WSL environment.
 2. Key note: Since we already have tensorflow enbaled with CUDA, we chose to setup RAPIDS in a different virtual environment (to avoid conflicts). Furthermore, for ease of use, the environment was exposed on a separate Jupyter kernel that allows us to switch between tensorflow and rapids as needed.
 3. Setup steps:
@@ -161,3 +178,20 @@
         d. run "sudo apt-get install -y cuda-toolkit-13-0" to install the toolkit. Includes "libnvrtc.so.13".
 
         e. run "echo 'export LD_LIBRARY_PATH=/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc" and "source ~/.bashrc" to expose library path.
+
+# Requirements to enable tensorflow with CUDA
+1. Python version 3.12  (check: run "python --version" in shell).
+2. CUDA version 12.3 (check: run "nvcc --version" in shell).
+3. cuDNN version 8.9.7 (not needed but can be installed as a safeguard).
+
+# Process to install CUDA-enabled tensorflow
+1. In shell, run "wsl -l -v" to make sure WSL is up and running.
+2. In shell, run "nvidia-smi" to make sure CUDA is available.
+3. In WSL virtual environment, run "pip install "tensorflow[and-cuda]"
+4. Run the following script to check tensorflow is running with CUDA and has Keras:
+    - import tensorflow as tf
+    - print("TensorFlow version:", tf.__version__)
+    - print("Built with CUDA:", tf.test.is_built_with_cuda())
+    - print("Physical GPUs:", tf.config.list_physical_devices('GPU'))
+    - print("Default GPU device name:", tf.test.gpu_device_name()) # this should show the GPU device name exactly as per actual GPU name.
+    - print(f'tf.keras exists: {hasattr(tf, 'keras')}')
