@@ -19,7 +19,7 @@ A large-scale analysis of 6,000+ Indian mutual fund schemes to construct efficie
  - Risk-adjusted performance via Sharpe ratios
 Portfolios are benchmarked against equity and debt indices, with a focus on diversification, risk-return trade-offs, and practical portfolio optimization.
 
-3. Market Risk Engine (FX / Rates)
+3. Market Risk Engine
 An end-to-end market risk framework implementing:
  - Historical Value-at-Risk (VaR)
  - Monte Carlo VaR
