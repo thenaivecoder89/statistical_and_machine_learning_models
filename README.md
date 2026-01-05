@@ -1,5 +1,5 @@
 # Statistical models and ML algorithms
-This repository contains a curated set of end-to-end projects focused on econometric modeling, portfolio construction, and market risk analytics, with an emphasis on out-of-sample performance, model validation, and regulatory relevance. The projects are designed to demonstrate practical application of statistical and machine-learning techniques in financial decision-making, combining rigorous quantitative methods with scalable data engineering practices. 
+This repository contains a curated set of end-to-end projects focused on econometric modeling, portfolio construction, and market risk analytics, with an emphasis on out-of-sample performance, model validation, and regulatory relevance. The projects are designed to demonstrate practical application of statistical and machine-learning techniques in financial and economic decision-making, combining rigorous quantitative methods with scalable data engineering practices. 
 
 -----
 
@@ -49,6 +49,7 @@ Environment setup and configuration steps are documented in subsequent sections.
  - Masterstroke Online: RBI repo rate history
 2. Project 2 – Portfolio Construction
  - Association of Mutual Funds of India (AMFI): Mutual fund scheme metadata and daily NAVs
+ - Kite API: Mutual fund scheme details (https://kite.trade/docs/pykiteconnect/v4/)
  - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
 3. Project 3 - Portfolio Risk Modelling
 
