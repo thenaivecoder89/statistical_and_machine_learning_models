@@ -41,7 +41,7 @@ Environment setup and configuration steps are documented in subsequent sections.
 
 -----
 
-## Data Sourcing and Economic Rationale
+## Data Sourcing and Rationale
 1. Project 1 – Macroeconomic Forecasting
  - Database on Indian Economy (DBIE): CPI inflation proxies and USD/INR exchange rates
  - Ministry of Statistics and Programme Implementation (MoSPI): Official CPI inflation data
