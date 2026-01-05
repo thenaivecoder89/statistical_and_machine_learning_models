@@ -11,7 +11,7 @@ A comparative analysis of ARIMAX and gradient-boosted tree models for macro-fina
  - Parameter stability and interpretability
  - Suitability of models for long-horizon forecasts
 
-The objective is to assess trade-offs between structural econometric models and flexible machine-learning approaches in macroeconomic contexts.
+    The objective is to assess trade-offs between structural econometric models and flexible machine-learning approaches in macroeconomic contexts.
 
 2. Mutual Fund Portfolio Construction (India)
 A large-scale analysis of 6,000+ Indian mutual fund schemes to construct efficient portfolios using:
