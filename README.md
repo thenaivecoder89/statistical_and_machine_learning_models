@@ -49,7 +49,7 @@ Environment setup and configuration steps are documented in subsequent sections.
  - Masterstroke Online: RBI repo rate history
 2. Project 2 – Portfolio Construction
  - Association of Mutual Funds of India (AMFI): Mutual fund scheme metadata and daily NAVs
- - Kite API: Mutual fund scheme details (https://kite.trade/docs/pykiteconnect/v4/)
+ - Kite API: Mutual fund scheme details (API Documentation: https://kite.trade/docs/pykiteconnect/v4/ and API App: https://developers.kite.trade/apps/723yxlspjutfbqzm)
  - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
 3. Project 3 - Portfolio Risk Modelling
 
