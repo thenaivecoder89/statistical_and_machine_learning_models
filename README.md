@@ -19,12 +19,12 @@ A large-scale analysis of 6,000+ Indian mutual fund schemes to construct efficie
  - Risk-adjusted performance via Sharpe ratios
 Portfolios are benchmarked against equity and debt indices, with a focus on diversification, risk-return trade-offs, and practical portfolio optimization.
 
-3. Market Risk Engine
-An end-to-end market risk framework implementing:
- - Historical Value-at-Risk (VaR)
- - Monte Carlo VaR
- - Expected Shortfall (ES)
-The engine includes Basel-style backtesting (Kupiec Proportion-of-Failures test and traffic-light framework) and stress testing using both historical crises (e.g., COVID-19, GFC) and hypothetical shocks. The project emphasizes model validation, tail-risk awareness, and regulatory alignment.
+3. Risk-Aware Portfolio Construction — Monte-Carlo vs Machine Learning–Based Risk Models
+A comparative analysis of classical parametric Monte-Carlo simulations and machine-learning–based risk forecasting models for portfolio optimization. The study evaluates:
+ - Out-of-sample risk control and downside protection
+ - Stability of portfolio allocations across market regimes
+ - Impact of risk-model choice on risk-adjusted performance metrics
+The objective is to assess the trade-offs between parametric distributional assumptions and data-driven conditional risk estimation when used as inputs to a fixed portfolio construction framework, with particular emphasis on robustness under regime shifts and market stress conditions.
 
 -----
 
@@ -47,6 +47,7 @@ Environment setup and configuration steps are documented in subsequent sections.
 2. Project 2 – Portfolio Construction
  - Association of Mutual Funds of India (AMFI): Mutual fund scheme metadata and daily NAVs
  - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
+3. Project 3 - Portfolio Risk Modelling
 
 Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
 
