@@ -10,6 +10,7 @@ A comparative analysis of ARIMAX and gradient-boosted tree models for macro-fina
  - Out-of-sample predictive performance
  - Parameter stability and interpretability
  - Suitability of models for long-horizon forecasts
+
 The objective is to assess trade-offs between structural econometric models and flexible machine-learning approaches in macroeconomic contexts.
 
 2. Mutual Fund Portfolio Construction (India)
@@ -17,13 +18,15 @@ A large-scale analysis of 6,000+ Indian mutual fund schemes to construct efficie
  - Log-returns of daily NAV data for annualized returns
  - Volatility estimation from NAV time series
  - Risk-adjusted performance via Sharpe ratios
+
 Portfolios are benchmarked against equity and debt indices, with a focus on diversification, risk-return trade-offs, and practical portfolio optimization.
 
-3. Risk-Aware Portfolio Construction — Monte-Carlo vs Machine Learning–Based Risk Models
+3. Risk-Aware Portfolio Construction (India) — Monte-Carlo vs Machine Learning–Based Risk Models
 A comparative analysis of classical parametric Monte-Carlo simulations and machine-learning–based risk forecasting models for portfolio optimization. The study evaluates:
  - Out-of-sample risk control and downside protection
  - Stability of portfolio allocations across market regimes
  - Impact of risk-model choice on risk-adjusted performance metrics
+
 The objective is to assess the trade-offs between parametric distributional assumptions and data-driven conditional risk estimation when used as inputs to a fixed portfolio construction framework, with particular emphasis on robustness under regime shifts and market stress conditions.
 
 -----
