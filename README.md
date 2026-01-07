@@ -52,6 +52,8 @@ Environment setup and configuration steps are documented in subsequent sections.
  - Kite API: Mutual fund scheme details (API Documentation: https://kite.trade/docs/pykiteconnect/v4/ and API App: https://developers.kite.trade/apps/723yxlspjutfbqzm)
  - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
 3. Project 3 - Portfolio Risk Modelling
+ - Kite API: Historical daily closing prices for equities (NIFTY 50 and NIFTY BANK indices: Period = 2001–2026)
+ - Yahoo Finance: Historical daily closing prices for commodities - only Gold (COMEX Gold Futures (GC=F, CME Group): Period = 2001–2026)
 
 Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
 
