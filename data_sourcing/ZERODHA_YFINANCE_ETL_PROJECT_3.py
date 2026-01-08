@@ -213,7 +213,7 @@ def main_program():
         )
         gold_df['daily_log_closing_value'] = cupy.log(1 + gold_df['daily_closing_pct_change'])
         gold_df['exhange_name'] = 'COMEX GOLD FUTURES (CME GROUP)'
-        gold_df['yfinance_trading_symbol'] = 'GC=F'
+        gold_df['trading_symbol'] = 'GC=F'
 
         print(f'Top 5 rows GOLD PROXY Historical Data (2001-2026):\n{gold_df.head()}')
         print(f'Last 5 rows GOLD PROXY Historical Data (2001-2026):\n{gold_df.tail()}')
