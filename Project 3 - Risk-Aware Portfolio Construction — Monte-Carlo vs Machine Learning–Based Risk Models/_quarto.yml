@@ -1,0 +1,42 @@
+project:
+  type: default
+
+title: "Comparing Parametric and Non-Parametric Monte-Carlo and Machine Learning Approaches to Development of Risk-Adjusted Portfolio Construction"
+
+execute:
+  echo: false        # ⬅️ Hides all code blocks globally
+  warning: false
+  message: false
+
+format:
+  pdf:
+    figwidth: 12
+    figheight: 6
+    papersize: a4
+    tbl-colwidths: auto
+    tbl-cap-location: top
+    tbl-slide-width: true
+    geometry:
+      - margin=15mm
+    toc: true
+    toc-depth: 3
+
+    # Optional: makes long console output fit more often
+    code-block-font-size: 8
+
+    include-in-header:
+      text: |
+        \usepackage{fvextra}
+
+        % Wrap verbatim-like blocks globally
+        \fvset{breaklines=true,breakanywhere=true}
+
+        % Wrap Pandoc/Jupyter stdout blocks
+        \RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true}
+
+        % Wrap Pandoc highlighted code blocks
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
+
+        % Helps LaTeX avoid overfull lines in normal text too
+        \sloppy
+        \setlength{\emergencystretch}{3em}
