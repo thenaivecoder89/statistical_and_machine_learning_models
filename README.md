@@ -1,5 +1,5 @@
-# Statistical models and ML algorithms
-This repository contains a curated set of end-to-end projects focused on econometric modeling, portfolio construction, and market risk analytics, with an emphasis on out-of-sample performance, model validation, and regulatory relevance. The projects are designed to demonstrate practical application of statistical and machine-learning techniques in financial and economic decision-making, combining rigorous quantitative methods with scalable data engineering practices. 
+# Repository of econometric, stochastic and machine learning models
+This repository contains a curated set of end-to-end projects focused on econometric modeling, market risk analytics and risk-aware portfolio construction, equity option pricing, and related quantitative finance problems, with an emphasis on out-of-sample performance, model validation, and regulatory relevance. The projects demonstrate practical application of statistical, econometric, stochastic, and machine-learning techniques in financial and economic decision-making, combining rigorous quantitative methodology with scalable data engineering practices. 
 
 -----
 
@@ -29,6 +29,14 @@ A comparative analysis of classical parametric Monte-Carlo simulations and machi
 
     The objective is to assess the trade-offs between parametric distributional assumptions and data-driven conditional risk estimation when used as inputs to a fixed portfolio construction framework, with particular emphasis on robustness under regime shifts and market stress conditions.
 
+4. Equity Option Pricing — Black-Scholes Merton vs Heston vs Monte-Carlo
+A comparative study of classical closed-form, stochastic volatility, and simulation-based approaches to European equity option pricing. The analysis systematically evaluates:
+ - Pricing accuracy across strikes and maturities
+ - Ability to capture volatility smile and skew observed in market data
+ - Stability and robustness of model outputs under calibration uncertainty
+ - Sensitivity and consistency of first- and second-order Greeks (Δ, Γ, Vega)
+
+    The objective is to assess the trade-offs between analytical tractability, numerical flexibility, and empirical realism when pricing European-style equity and index options. Particular emphasis is placed on understanding how distributional assumptions—constant volatility under Black-Scholes, stochastic variance dynamics under Heston, and discretized path simulation under Monte-Carlo—impact pricing fidelity, hedging sensitivities, and model stability.
 -----
 
 ## Compute Environment and Performance Design
@@ -51,9 +59,10 @@ Environment setup and configuration steps are documented in subsequent sections.
  - Association of Mutual Funds of India (AMFI): Mutual fund scheme metadata and daily NAVs
  - Kite API: Mutual fund scheme details (API Documentation: https://kite.trade/docs/pykiteconnect/v4/ and API App: https://developers.kite.trade/apps/723yxlspjutfbqzm)
  - Database on Indian Economy (DBIE): 91-day Government of India Treasury Bill yields, used as a proxy for the domestic risk-free rate
-3. Project 3 - Portfolio Risk Modelling
+3. Project 3 - Risk-Aware Portfolio Construction
  - Kite API: Historical daily closing prices for equities (NIFTY 50 and NIFTY BANK indices: Period = 2001–2026)
  - Yahoo Finance: Historical daily closing prices for commodities - only Gold (COMEX Gold Futures (GC=F, CME Group): Period = 2001–2026)
+4. Project 4 - Equity Option Pricing (WIP)
 
 Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
 
