@@ -1,7 +1,7 @@
 project:
   type: default
 
-title: "Comparing Parametric and Non-Parametric Monte-Carlo and Machine Learning Approaches to Development of Risk-Adjusted Portfolio Construction"
+title: "Comparing Parametric and Non-Parametric Monte-Carlo and Machine Learning Approaches for Development of Risk-Adjusted Portfolio Construction"
 
 execute:
   echo: false        # ⬅️ Hides all code blocks globally
