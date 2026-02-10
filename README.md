@@ -41,7 +41,7 @@ A comparative study of classical closed-form, stochastic volatility, and simulat
 -----
 
 ## Compute Environment and Performance Design
-Project 1 primarily uses CPU-based workflows with NumPy and Pandas, while Projects 2 and 3 leverage GPU-accelerated computation using CuPy and cuDF within a CUDA-enabled WSL environment.
+Projects 1 and 4 primarily uses CPU-based workflows with NumPy and Pandas, while Projects 2 and 3 leverage GPU-accelerated computation using CuPy and cuDF within a CUDA-enabled WSL environment.
 This design demonstrates:
  - Seamless interoperability between CPU and GPU data pipelines
  - Scalable processing of large financial time-series datasets
@@ -63,7 +63,7 @@ Environment setup and configuration steps are documented in subsequent sections.
 3. Project 3 - Risk-Aware Portfolio Construction
  - Kite API: Historical daily closing prices for equities (NIFTY 50 and NIFTY BANK indices: Period = 2001–2026)
  - Yahoo Finance: Historical daily closing prices for commodities - only Gold (COMEX Gold Futures (GC=F, CME Group): Period = 2001–2026)
-4. Project 4 - Equity Option Pricing (WIP)
+4. Project 4 - Downstream Risk Implications of Derivative Pricing Models (WIP)
 
 Data selection is driven by economic relevance, data integrity, and alignment with Indian financial markets.
 
