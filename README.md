@@ -29,14 +29,15 @@ A comparative analysis of classical parametric Monte-Carlo simulations and machi
 
     The objective is to assess the trade-offs between parametric distributional assumptions and data-driven conditional risk estimation when used as inputs to a fixed portfolio construction framework, with particular emphasis on robustness under regime shifts and market stress conditions.
 
-4. Equity Option Pricing — Black-Scholes Merton vs Heston vs Monte-Carlo
-A comparative study of classical closed-form, stochastic volatility, and simulation-based approaches to European equity option pricing. The analysis systematically evaluates:
- - Pricing accuracy across strikes and maturities
- - Ability to capture volatility smile and skew observed in market data
- - Stability and robustness of model outputs under calibration uncertainty
+4. Downstream Risk Implications of Derivative Pricing Models — Black-Scholes Merton vs Heston vs Monte-Carlo
+A comparative study of classical closed-form, stochastic volatility, and simulation-based derivative pricing frameworks, examined through the lens of their downstream market risk implications. The analysis systematically evaluates:
+ - Propagation of pricing model assumptions into return and P&L distributions
  - Sensitivity and consistency of first- and second-order Greeks (Δ, Γ, Vega)
+ - Impact on tail risk measures and risk decomposition frameworks, including Value-at-Risk (VaR), Expected Shortfall (ES), and Barra-style factor models for systematic risk identification
+ - Stability and robustness of risk metrics under parameter uncertainty and distributional misspecification
+ - Consistency of risk sensitivities and exposure profiles derived from model-implied price dynamics
 
-    The objective is to assess the trade-offs between analytical tractability, numerical flexibility, and empirical realism when pricing European-style equity and index options. Particular emphasis is placed on understanding how distributional assumptions—constant volatility under Black-Scholes, stochastic variance dynamics under Heston, and discretized path simulation under Monte-Carlo—impact pricing fidelity, hedging sensitivities, and model stability.
+    The objective is to assess how alternative derivative pricing models—while potentially comparable in point-in-time valuation—differ materially in their risk-adjusted behavior when embedded within a market risk analytics pipeline. Particular emphasis is placed on understanding how underlying distributional assumptions—constant volatility under Black-Scholes-Merton, stochastic variance dynamics under Heston, and non-parametric path generation under Monte-Carlo—shape downstream risk characteristics, including tail thickness, skewness, volatility clustering, and stress-period sensitivity. The study reframes pricing models as risk factor generators, benchmarking them not on valuation accuracy alone, but on their ability to produce stable, coherent, and regulatorily meaningful risk estimates for trading book applications.
 -----
 
 ## Compute Environment and Performance Design
